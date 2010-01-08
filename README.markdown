@@ -9,12 +9,15 @@ This is a proof-of-concept implementation that treats Java code like
 a Groovy code (with taking care of some edge cases), with ignoring all the
 types!
 
-This sample code illustrates two points:
+This sample code illustrates few points:
 
-- You can use an annotation processor to invoke a different specialized
+1. You can use an annotation processor to invoke a different specialized
   (dynamic?) compiler, without affecting the usability of the tool
 
-- how you can generate Groovy transformations
+2. how you can compile Groovy but ensure the code is syntactically valid
+   Java code
+
+3. how you can generate Groovy transformations (not done yet)
 
 Unfortunately, there are some rough edges here, but hey, this worked within
 less than two hours of work.
@@ -24,7 +27,7 @@ Sample:
 
 Consider the following class:
 
-[Available in examples]
+[Available in jtypeless/examples/Sample.java]
 	class Sample {
     	private void test(Integer a) { System.out.println("Int: " + a); }
 
@@ -48,28 +51,13 @@ Steps:
 
 2. Compile Sample.java and run it
 
-    cd examples; ./run-sample.sh
+    cd examples
+    javac -cp ../jtypeless.jar Sample.java
+    java -cp ../jtypeless.jar:. Sample
 
-Note that `run-sample.sh` is just:
-
-	#!/bin/sh
-
-	echo Compiling Sample.java
-	java -cp $JAVA_HOME/lib/tools.jar:../typeless.jar \
-     	com.sun.tools.javac.Main -d . Sample.java
-
-	echo Running Sample now
-	java -cp ../typeless.jar:. Sample
-
-Unfortunately, javac script misses up with classpath for now, and creates
-a bit of ClassLoader conflicts for now.  So for now, the `run-sample.sh`
-invokes the compiler Main class directly
 
 3. Verify the results:
 
-	Compiling Sample.java
-	About to transform: /var/tmp/Sample14217.groovy
-	Running Sample now
 	Int: 4
 	Int: 7
 	Int: 3
