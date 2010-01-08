@@ -1,0 +1,17 @@
+.DS_Store
+.#*
+
+target
+release.properties
+
+*~
+
+.project
+.classpath
+.settings
+
+build
+bin
+
+typeless.jar
+*.class

@@ -1,0 +1,47 @@
+<!--
+  This is an Ant build file for compiling the Checker Framework.
+-->
+<project name="checkers" default="dist" basedir=".">
+
+    <description>
+      Builds the Checker Framework for the JSR 308 compiler.
+    </description>
+
+    <property name="src" value="src"/>
+    <property name="build" value="build"/>
+    <property name="dist.jar" value="typeless.jar"/>
+    <property file="build.properties"/>
+
+    <property name="groovy.path" value="lib/groovy-all-1.7.0.jar"/>
+
+    <target name="prep" description="Create required directories">
+        <mkdir dir="${build}"/>
+    </target>
+
+    <target name="clean" description="Remove generated files">
+        <delete dir="${build}"/>
+        <delete dir="${disr.jar}"/>
+    </target>
+
+    <target name="build" depends="prep"
+            description="Compile files">
+
+      <javac srcdir="${src}" destdir="${build}"
+	            classpath="${groovy.path}"/>
+
+        <copy todir="${build}/META-INF" preservelastmodified="true">
+	  <fileset dir="${src}/META-INF"/>
+        </copy>
+
+    </target>
+
+    <target name="dist" depends="clean,jar"/>
+    <target name="jar" depends="build"
+            description="Create jar file">
+      <jar destfile="${dist.jar}">
+        <!-- <zipfileset src="${groovy.path}"/> -->
+        <fileset dir="${build}"/>
+      </jar>
+    </target>
+
+</project>
