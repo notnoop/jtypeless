@@ -13,5 +13,5 @@ release.properties
 build
 bin
 
-typeless.jar
+jtypeless.jar
 *.class

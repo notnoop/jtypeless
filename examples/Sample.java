@@ -9,6 +9,6 @@ class Sample {
 	new Sample().test(s);
 
 	Object a = new Sample();
-	a.test("m");
+	a.test(3);
     }
 }

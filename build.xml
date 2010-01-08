@@ -9,7 +9,7 @@
 
     <property name="src" value="src"/>
     <property name="build" value="build"/>
-    <property name="dist.jar" value="typeless.jar"/>
+    <property name="dist.jar" value="jtypeless.jar"/>
     <property file="build.properties"/>
 
     <property name="groovy.path" value="lib/groovy-all-1.7.0.jar"/>
@@ -26,11 +26,11 @@
     <target name="build" depends="prep"
             description="Compile files">
 
-      <javac srcdir="${src}" destdir="${build}"
-	            classpath="${groovy.path}"/>
+        <javac srcdir="${src}" destdir="${build}"
+            classpath="${groovy.path}"/>
 
         <copy todir="${build}/META-INF" preservelastmodified="true">
-	  <fileset dir="${src}/META-INF"/>
+            <fileset dir="${src}/META-INF"/>
         </copy>
 
     </target>
@@ -39,7 +39,7 @@
     <target name="jar" depends="build"
             description="Create jar file">
       <jar destfile="${dist.jar}">
-        <!-- <zipfileset src="${groovy.path}"/> -->
+        <zipfileset src="${groovy.path}"/>
         <fileset dir="${build}"/>
       </jar>
     </target>

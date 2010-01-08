@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +21,7 @@ import com.sun.source.tree.*;
 import com.sun.source.util.*;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
+import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.Options;
 
 @SupportedAnnotationTypes("*")
@@ -29,6 +29,7 @@ import com.sun.tools.javac.util.Options;
 public class GroovyProcessor extends AbstractProcessor {
     private List<JCCompilationUnit> javaSources = new ArrayList<JCCompilationUnit>();
     private List<String> groovyFiles = new ArrayList<String>();
+    private Context context = null;
 
     private void addToList(RoundEnvironment roundEnv) {
         Trees trees = Trees.instance(this.processingEnv);
@@ -45,7 +46,7 @@ public class GroovyProcessor extends AbstractProcessor {
             File tempFile = File.createTempFile(unit.getSourceFile().getName().replace(".java", ""), ".groovy");
             tempFile.deleteOnExit();
             Writer out = new FileWriter(tempFile);
-            GroovyConverter converter = new GroovyConverter(out);
+            GroovyConverter converter = new GroovyConverter(out, context);
             unit.accept(converter);
             out.flush();
             groovyFiles.add(tempFile.getAbsolutePath());
@@ -58,7 +59,7 @@ public class GroovyProcessor extends AbstractProcessor {
     }
 
     private void compileAsGroovy() throws Exception {
-        Options ops = Options.instance(((JavacProcessingEnvironment)this.processingEnv).getContext());
+        Options ops = Options.instance(context);
         String d = ops.get("-d");
         if (d == null) {
             this.processingEnv.getMessager().printMessage(Kind.MANDATORY_WARNING, "-d option is required!");
@@ -74,7 +75,7 @@ public class GroovyProcessor extends AbstractProcessor {
         }
 
         try {
-            GroovyClassLoader loader = new GroovyClassLoader(ClassLoader.getSystemClassLoader());
+            GroovyClassLoader loader = new GroovyClassLoader();
             Class<?> compiler = loader.loadClass("org.codehaus.groovy.tools.FileSystemCompiler", true, false);
             compiler.getMethod("commandLineCompile", String[].class)
             .invoke(null, new Object[] {args });
@@ -90,7 +91,7 @@ public class GroovyProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations,
             RoundEnvironment roundEnv) {
         if (roundEnv.processingOver()) {
-            System.out.println(System.getProperties());
+            context = ((JavacProcessingEnvironment)this.processingEnv).getContext();
             try {
                 generateGroovyCode();
                 cleanUpTrees();

@@ -7,6 +7,9 @@ import com.sun.source.tree.Tree;
 import com.sun.tools.javac.tree.*;
 import com.sun.tools.javac.tree.JCTree.JCBinary;
 import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
+import com.sun.tools.javac.util.Context;
+import com.sun.tools.javac.util.Name;
+import com.sun.tools.javac.util.Name.Table;
 
 /**
  * Groovy code is almost a superset syntactically of Java code,
@@ -24,8 +27,13 @@ import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
  */
 public class GroovyConverter extends Pretty {
 
-    public GroovyConverter(Writer out) {
+    private TreeMaker treeMaker;
+    private Name objectName;
+    public GroovyConverter(Writer out, Context context) {
         super(out, true);
+        treeMaker =  TreeMaker.instance(context);
+        Table table = Table.instance(context);
+        objectName = Name.fromString(table, "Object");
     }
 
     // case 2: replace == with eq
@@ -53,19 +61,8 @@ public class GroovyConverter extends Pretty {
         // at this stage, method parameters have their types
         // declared
         if (tree.sym == null) {
-            try {
-                print("Object ");
-                print(tree.name);
-                if (tree.init != null) {
-                    print(" = ");
-                    printExpr(tree.init);
-                };
-                print(";");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            super.visitVarDef(tree);
+            tree.vartype = treeMaker.Ident(objectName);
         }
+        super.visitVarDef(tree);
     }
 }
