@@ -75,7 +75,7 @@ public class GroovyProcessor extends AbstractProcessor {
         }
 
         try {
-            GroovyClassLoader loader = new GroovyClassLoader();
+            GroovyClassLoader loader = new GroovyClassLoader(this.getClass().getClassLoader());
             Class<?> compiler = loader.loadClass("org.codehaus.groovy.tools.FileSystemCompiler", true, false);
             compiler.getMethod("commandLineCompile", String[].class)
             .invoke(null, new Object[] {args });
