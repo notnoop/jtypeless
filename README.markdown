@@ -48,16 +48,23 @@ still compile it and run it with jTypeless.
 
 Steps:
 
-1. Compiler: `ant clean dist`
+1. Checkout the code
 
-2. Compile Sample.java and run it
+        git clone git://github.com/notnoop/jtypeless.git
+
+2. Build jtypeless
+
+        cd jtypeless
+        ant
+
+3. Compile Sample.java and run it
 
         cd examples
         javac -cp ../jtypeless.jar Sample.java
         java -cp ../jtypeless.jar:. Sample
 
 
-3. Verify the results:
+4. Verify the results:
 
 	Int: 4
 	Int: 7
