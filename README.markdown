@@ -28,6 +28,7 @@ Sample:
 Consider the following class:
 
 [Available in jtypeless/examples/Sample.java]
+
 	class Sample {
     	private void test(Integer a) { System.out.println("Int: " + a); }
 
@@ -51,9 +52,9 @@ Steps:
 
 2. Compile Sample.java and run it
 
-    cd examples
-    javac -cp ../jtypeless.jar Sample.java
-    java -cp ../jtypeless.jar:. Sample
+        cd examples
+        javac -cp ../jtypeless.jar Sample.java
+        java -cp ../jtypeless.jar:. Sample
 
 
 3. Verify the results:
